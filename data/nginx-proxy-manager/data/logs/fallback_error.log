@@ -1,0 +1,6 @@
+2025/06/21 00:03:27 [error] 188#188: *7 open() "/var/www/html/admin" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "GET /admin HTTP/1.1", host: "localhost"
+2025/06/21 00:11:06 [error] 187#187: *2 open() "/var/www/html/api/tasks" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/tasks HTTP/1.1", host: "localhost"
+2025/06/21 00:11:20 [error] 187#187: *2 open() "/var/www/html/api/tasks" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/tasks HTTP/1.1", host: "localhost"
+2025/06/21 00:11:23 [error] 187#187: *2 open() "/var/www/html/api/tasks" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/tasks HTTP/1.1", host: "localhost"
+2025/06/21 00:11:40 [error] 187#187: *2 open() "/var/www/html/api/users" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/users HTTP/1.1", host: "localhost"
+2025/06/21 00:13:14 [error] 189#189: *2 open() "/var/www/html/api/users" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/users HTTP/1.1", host: "localhost"

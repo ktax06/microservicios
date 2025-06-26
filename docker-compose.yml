@@ -1,0 +1,65 @@
+services:
+  user-service:
+    build: ./user-service
+    expose:
+      - "5000"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  task-service:
+    build: ./task-service
+    expose:
+      - "5000"
+    networks:
+      - internal
+    depends_on:
+      user-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      retries: 5
+
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - "${NGINX_HTTP_PORT}:80"      # HTTP
+      - "${NGINX_HTTPS_PORT}:443"    # HTTPS
+      - "${NGINX_ADMIN_PORT}:81"     # Admin Web UI
+    environment:
+      DB_MYSQL_HOST: "npm-db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm"
+      DB_MYSQL_PASSWORD: "npm_password"
+      DB_MYSQL_NAME: "npm"
+    volumes:
+      - ./data/nginx-proxy-manager/data:/data
+      - ./data/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - npm-db
+    networks:
+      - internal
+
+  npm-db:
+    image: mariadb:10.5
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "root_password"
+      MYSQL_DATABASE: "npm"
+      MYSQL_USER: "npm"
+      MYSQL_PASSWORD: "npm_password"
+    volumes:
+      - ./data/nginx-proxy-manager/mysql:/var/lib/mysql
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
