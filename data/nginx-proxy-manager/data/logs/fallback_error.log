@@ -4,3 +4,6 @@
 2025/06/21 00:11:23 [error] 187#187: *2 open() "/var/www/html/api/tasks" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/tasks HTTP/1.1", host: "localhost"
 2025/06/21 00:11:40 [error] 187#187: *2 open() "/var/www/html/api/users" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/users HTTP/1.1", host: "localhost"
 2025/06/21 00:13:14 [error] 189#189: *2 open() "/var/www/html/api/users" failed (2: No such file or directory), client: 172.18.0.1, server: localhost-nginx-proxy-manager, request: "POST /api/users HTTP/1.1", host: "localhost"
+2025/06/26 01:40:57 [warn] 196#196: duplicate MIME type "text/html" in /data/nginx/proxy_host/1.conf:74
+2025/06/26 01:42:37 [warn] 196#196: duplicate MIME type "text/html" in /data/nginx/proxy_host/1.conf:75
+2025/06/26 01:45:48 [warn] 196#196: duplicate MIME type "text/html" in /data/nginx/proxy_host/1.conf:77
