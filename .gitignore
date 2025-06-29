@@ -1,0 +1,4 @@
+# Ignorar volúmenes de datos de Nginx Proxy Manager
+data/nginx-proxy-manager/mysql/
+data/nginx-proxy-manager/nginx/
+data/nginx-proxy-manager/letsencrypt/
