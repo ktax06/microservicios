@@ -1,47 +1,54 @@
 services:
-  user-service:
+  user-service-1:
     build: ./user-service
     expose:
       - "5000"
     networks:
       - internal
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
 
-  task-service:
+  user-service-2:
+    build: ./user-service
+    expose:
+      - "5000"
+    networks:
+      - internal
+
+  task-service-1:
     build: ./task-service
     expose:
       - "5000"
     networks:
       - internal
     depends_on:
-      user-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
-      interval: 10s
-      retries: 5
+      - user-service-1
+
+  task-service-2:
+    build: ./task-service
+    expose:
+      - "5000"
+    networks:
+      - internal
+    depends_on:
+      - user-service-2
 
   nginx-proxy-manager:
     image: jc21/nginx-proxy-manager:latest
     restart: unless-stopped
     ports:
-      - "${NGINX_HTTP_PORT}:80"      # HTTP
-      - "${NGINX_HTTPS_PORT}:443"    # HTTPS
-      - "${NGINX_ADMIN_PORT}:81"     # Admin Web UI
+      - "${NGINX_HTTP_PORT}:80"
+      - "${NGINX_HTTPS_PORT}:443"
+      - "${NGINX_ADMIN_PORT}:81"
     environment:
       DB_MYSQL_HOST: "npm-db"
       DB_MYSQL_PORT: 3306
       DB_MYSQL_USER: "npm"
       DB_MYSQL_PASSWORD: "npm_password"
       DB_MYSQL_NAME: "npm"
+
     volumes:
       - ./data/nginx-proxy-manager/data:/data
       - ./data/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - ./custom.conf:/data/nginx/custom/http_top.conf
     depends_on:
       - npm-db
     networks:
