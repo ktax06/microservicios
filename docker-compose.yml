@@ -5,6 +5,7 @@ services:
       - "5000"
     networks:
       - internal
+      - shared-net
 
   user-service-2:
     build: ./user-service
@@ -12,6 +13,7 @@ services:
       - "5000"
     networks:
       - internal
+      - shared-net
 
   task-service-1:
     build: ./task-service
@@ -19,6 +21,7 @@ services:
       - "5000"
     networks:
       - internal
+      - shared-net
     depends_on:
       - user-service-1
 
@@ -28,6 +31,7 @@ services:
       - "5000"
     networks:
       - internal
+      - shared-net
     depends_on:
       - user-service-2
 
@@ -44,15 +48,14 @@ services:
       DB_MYSQL_USER: "npm"
       DB_MYSQL_PASSWORD: "npm_password"
       DB_MYSQL_NAME: "npm"
-
     volumes:
       - ./data/nginx-proxy-manager/data:/data
       - ./data/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
-      - ./nginx/custom.conf:/etc/nginx/conf.d/custom.conf
     depends_on:
       - npm-db
     networks:
       - internal
+      - shared-net
 
   npm-db:
     image: mariadb:10.5
@@ -69,4 +72,6 @@ services:
 
 networks:
   internal:
+    driver: bridge
+  shared-net:
     driver: bridge
