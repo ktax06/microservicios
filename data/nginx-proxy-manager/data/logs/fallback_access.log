@@ -569,3 +569,5 @@
 [30/Jun/2025:19:15:44 +0000] 400 - - http localhost-nginx-proxy-manager "-" [Client 79.124.58.198] [Length 154] [Gzip -] "-" "-"
 [30/Jun/2025:19:21:37 +0000] 404 - GET http 34.176.73.10 "/.env" [Client 170.64.163.161] [Length 122] [Gzip 1.35] "Mozilla/5.0; Keydrop.io/1.0(onlyscans.com/about);" "-"
 [30/Jun/2025:19:21:38 +0000] 404 - GET http 34.176.73.10 "/.git/config" [Client 170.64.163.161] [Length 122] [Gzip 1.35] "Mozilla/5.0; Keydrop.io/1.0(onlyscans.com/about);" "-"
+[02/Jul/2025:19:08:43 +0000] 200 - GET http 34.176.73.10 "/" [Client 204.76.203.206] [Length 1033] [Gzip -] "-" "-"
+[02/Jul/2025:19:16:36 +0000] 200 - GET http 34.176.73.10 "/" [Client 103.203.56.1] [Length 1033] [Gzip -] "HTTP Banner Detection (https://security.ipip.net)" "-"
