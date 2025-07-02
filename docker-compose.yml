@@ -5,7 +5,7 @@ services:
       - "5000"
     networks:
       - internal
-      - shared-net
+     
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
       interval: 10s
@@ -19,7 +19,7 @@ services:
       - "5000"
     networks:
       - internal
-      - shared-net
+     
     depends_on:
       user-service:
         condition: service_healthy
@@ -65,5 +65,4 @@ services:
 networks:
   internal:
     driver: bridge
-  shared-net:
-    driver: bridge
+  
