@@ -42,6 +42,7 @@ services:
     volumes:
       - ./data/nginx-proxy-manager/data:/data
       - ./data/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+      - ./custom.conf:/data/nginx/custom/http_top.conf
     depends_on:
       - npm-db
     networks:
