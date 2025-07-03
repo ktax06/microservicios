@@ -64,8 +64,8 @@ microservicios-proyecto/
 
 1. **Clonar el repositorio**:
    ```bash
-   git clone <url-del-repositorio>
-   cd microservicios-proyecto
+   git clone https://github.com/ktax06/microservicios
+   cd microservicios
    ```
 
 2. **Construir y ejecutar los servicios**:
@@ -135,29 +135,6 @@ send_timeout 10s;
 - Redirección automática HTTP → HTTPS
 - Certificados válidos (Let's Encrypt recomendado)
 
-## Pruebas de Resiliencia
-
-### Pruebas de Carga
-
-Ejecutar pruebas con Apache Benchmark:
-
-```bash
-# Prueba básica de carga
-ab -n 1000 -c 10 https://localhost/api/users/
-
-# Prueba con rate limiting
-ab -n 100 -c 50 https://localhost/api/users/
-```
-
-### Pruebas de Disponibilidad
-
-```bash
-# Simular falla de una réplica
-docker-compose stop user-service
-
-# Verificar continuidad del servicio
-curl https://localhost/api/users/health
-```
 
 ## Monitoreo
 
@@ -194,25 +171,6 @@ NGINX_HTTP_PORT=80
 NGINX_HTTPS_PORT=443
 NGINX_ADMIN_PORT=81
 ```
-
-### Escalado
-
-
-## Solución de Problemas
-
-### Problemas Comunes
-
-1. **Servicios no se comunican**:
-   - Verificar que estén en la misma red Docker
-   - Comprobar nombres de servicios en docker-compose.yml
-
-2. **Rate limiting muy restrictivo**:
-   - Ajustar parámetros en `nginx/custom.conf`
-   - Reiniciar nginx-proxy-manager
-
-3. **SSL no funciona**:
-   - Verificar configuración de certificados
-   - Comprobar redirección HTTP → HTTPS
 
 ### Comandos Útiles
 
