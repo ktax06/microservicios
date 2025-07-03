@@ -6,6 +6,13 @@ services:
     networks:
       - internal
       - shared-net
+     
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
   user-service-2:
     build: ./user-service
@@ -32,6 +39,13 @@ services:
     networks:
       - internal
       - shared-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+      
     depends_on:
       - user-service-2
 
