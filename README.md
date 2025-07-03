@@ -1,128 +1,247 @@
-# Microservicios con Alta Disponibilidad, Seguridad y Orquestación
+# Microservicios con Docker - Sistema de Gestión de Usuarios y Tareas
 
-Este proyecto implementa una arquitectura basada en microservicios, con servicios separados para la gestión de usuarios y tareas, utilizando un API Gateway seguro (Nginx Proxy Manager), contenedores Docker y orquestación con Docker Compose. También incluye mecanismos para mitigar ataques de denegación de servicio (DoS) y mejorar la resiliencia del sistema mediante réplicas.
+## Descripción del Proyecto
 
----
+Este proyecto implementa una arquitectura de microservicios completa para la gestión de usuarios y tareas, utilizando Docker, Docker Compose y Nginx Proxy Manager como API Gateway. El sistema incluye medidas de seguridad, alta disponibilidad y protección contra ataques DoS.
 
-## Arquitectura de la Aplicación
+## Arquitectura
 
-### Componentes principales:
-- **🔐 user-service**: Gestión de usuarios del sistema (registro, consulta y validación).
-- **✅ task-service**: Manejo de tareas asignadas a usuarios.
-- **🌐 API Gateway (nginx-proxy)**: Enrutamiento seguro del tráfico hacia los microservicios.
+La aplicación está compuesta por los siguientes componentes:
 
----
+- **user-service**: Microservicio para gestión de usuarios
+- **task-service**: Microservicio para gestión de tareas
+- **nginx-proxy-manager**: API Gateway con proxy inverso
+- **SQLite**: Base de datos para persistencia
 
-## 📦 Servicios
+## Características Principales
 
-### 1. user-service
+### Seguridad
+- **SSL/TLS**: Comunicación HTTPS con certificados válidos
+- **Rate Limiting**: Protección contra ataques DoS (5 requests/segundo por IP)
+- **Timeouts configurados**: Prevención de saturación del servidor
+- **Límites de conexiones concurrentes**: Control de conexiones simultáneas
 
-Gestor de información de usuarios.
+### Alta Disponibilidad
+- **Réplicas múltiples**: Cada microservicio con al menos 2 réplicas
+- **Balanceo de carga**: Distribución automática del tráfico
+- **Health checks**: Monitoreo del estado de los servicios
+- **Recuperación automática**: Tolerancia a fallos de instancias
 
-- **Tecnologías**: Python + Flask + SQLite
-- **Endpoints REST**:
-  - `POST /users` - Registrar un nuevo usuario
-  - `GET /users` - Listar todos los usuarios
-  - `GET /users/{id}` - Obtener usuario específico
-  - `GET /health` - Verificación de estado
-- **Validaciones**:
-  - Campos obligatorios
-  - Email único y formato válido
-- **Contenerización**:
-  - Dockerfile optimizado
-- **Persistencia**:
-  - Base de datos SQLite local
+### API Gateway
+- **Enrutamiento centralizado**: Punto de entrada único
+- **Proxy inverso**: Nginx Proxy Manager
+- **Red interna segura**: Comunicación entre servicios
 
----
+## Estructura del Proyecto
 
-### 2. task-service
+```
+microservicios-proyecto/
+├── user-service/
+│   ├── Dockerfile
+│   ├── app.py
+│   ├── requirements.txt
+│   └── database.db
+├── task-service/
+│   ├── Dockerfile
+│   ├── app.py
+│   ├── requirements.txt
+│   └── database.db
+├── nginx/
+│   └── custom.conf
+├── docker-compose.yml
+└── README.md
+```
 
-Gestor de tareas con validación de usuarios.
+## Instalación y Configuración
 
-- **Tecnologías**: Python + Flask + SQLite
-- **Endpoints REST**:
-  - `POST /tasks` - Crear nueva tarea
-  - `GET /tasks` - Listar todas las tareas
-  - `GET /tasks/{id}` - Obtener tarea específica
-  - `PUT /tasks/{id}` - Actualizar tarea
-  - `GET /tasks?user_id=X` - Tareas por usuario
-  - `GET /health` - Verificación de estado
-- **Estados**: `pendiente`, `en progreso`, `completada`
-- **Relaciones**: Tareas vinculadas a usuarios mediante IDs
-- **Contenerización**:
-  - Dockerfile para construcción de imagen
+### Prerrequisitos
 
----
+- Docker (versión 20.10 o superior)
+- Docker Compose (versión 1.29 o superior)
+- Acceso a internet para descargar imágenes
 
-## 🧪 Orquestación con Docker Compose
+### Configuración Inicial
 
-Archivo `docker-compose.yml` que:
+1. **Clonar el repositorio**:
+   ```bash
+   git clone <url-del-repositorio>
+   cd microservicios-proyecto
+   ```
 
-- Define los servicios: `user-service`, `task-service`
-- Configura red interna para comunicación segura
-- Define API Gateway con [Nginx Proxy Manager](https://nginxproxymanager.com/)
-- Expone rutas:
-  - `/api/users/*` → user-service
-  - `/api/tasks/*` → task-service
-  - `/admin` → Interfaz de NPM
-- Configura:
-  - Volúmenes persistentes
-  - Variables de entorno
-  - Health checks
-  - Réplicas para alta disponibilidad
+2. **Construir y ejecutar los servicios**:
+   ```bash
+   docker-compose up --build -d
+   ```
 
----
+3. **Verificar que los servicios estén funcionando**:
+   ```bash
+   docker-compose ps
+   ```
 
-## 🔐 Seguridad y Alta Disponibilidad
+### Configuración del API Gateway
 
-### 1. API Gateway Seguro
+1. Acceder a Nginx Proxy Manager en: `http://localhost:81`
+2. Credenciales por defecto:
+   - Email: `admin@example.com`
+   - Password: `changeme`
+3. Configurar los proxy hosts para los servicios
 
-- **HTTPS activado con certificados SSL/TLS**
-  - Generados con Let's Encrypt (Certbot) o OpenSSL (autofirmado)
-- **Redirección automática de HTTP → HTTPS**
-- **Cifrado robusto (TLS 1.2+)**
+## Endpoints de la API
 
-📸 *Evidencia: Navegador mostrando conexión segura*
+### Servicio de Usuarios (`/api/users/`)
 
----
+- `POST /api/users` - Registrar nuevo usuario
+- `GET /api/users` - Listar todos los usuarios
+- `GET /api/users/{id}` - Obtener usuario específico
+- `GET /api/users/health` - Estado del servicio
 
-### 2. Defensa ante ataques DoS (Denegación de Servicio)
+### Servicio de Tareas (`/api/tasks/`)
 
-- **Simulación de ataques**:
-  - Herramientas: `slowhttptest`, `ab`
-  - Análisis de logs y comportamiento
-- **Mitigaciones implementadas**:
-  - `Rate limiting` (límites por IP)
-  - Timeouts en Nginx
-  - Límites de conexiones simultáneas
-  - Monitoreo de recursos
+- `POST /api/tasks` - Crear nueva tarea
+- `GET /api/tasks` - Listar todas las tareas
+- `GET /api/tasks/{id}` - Obtener tarea específica
+- `PUT /api/tasks/{id}` - Actualizar estado de tarea
+- `GET /api/tasks?user_id=X` - Filtrar tareas por usuario
+- `GET /api/tasks/health` - Estado del servicio
 
-📸 *Comparativa de logs antes y después de mitigar*
+### Estados de Tareas
 
-📖 *Análisis teórico de detección de ataques DoS en entornos reales*
+- `pendiente` - Tarea creada pero no iniciada
+- `en_progreso` - Tarea en desarrollo
+- `completada` - Tarea finalizada
 
----
+## Configuración de Seguridad
 
-### 3. Alta Disponibilidad
+### Rate Limiting
 
-- **Réplicas**:
-  - Mínimo 2 réplicas por microservicio
-  - Balanceo de carga con Nginx Proxy
-- **Pruebas**:
-  - Falla controlada de un contenedor
-  - Verificación de continuidad de servicio
-  - Evaluación del tiempo de recuperación
+El sistema implementa las siguientes medidas de protección:
 
-📸 *Logs mostrando continuidad y resiliencia bajo carga*
+```nginx
+# Límite de requests por segundo
+limit_req_zone $binary_remote_addr zone=mylimit:10m rate=5r/s;
 
----
+# Límite de conexiones concurrentes
+limit_conn_zone $binary_remote_addr zone=addr:10m;
 
-## ▶️ Cómo ejecutar
+# Timeouts de seguridad
+client_header_timeout 10s;
+client_body_timeout 10s;
+send_timeout 10s;
+```
+
+### SSL/TLS
+
+- Protocolo: TLS 1.2+
+- Redirección automática HTTP → HTTPS
+- Certificados válidos (Let's Encrypt recomendado)
+
+## Pruebas de Resiliencia
+
+### Pruebas de Carga
+
+Ejecutar pruebas con Apache Benchmark:
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/tuusuario/nombre-del-proyecto.git
-cd nombre-del-proyecto
+# Prueba básica de carga
+ab -n 1000 -c 10 https://localhost/api/users/
 
-# Construir e iniciar servicios
-docker-compose up --build
+# Prueba con rate limiting
+ab -n 100 -c 50 https://localhost/api/users/
+```
+
+### Pruebas de Disponibilidad
+
+```bash
+# Simular falla de una réplica
+docker-compose stop user-service
+
+# Verificar continuidad del servicio
+curl https://localhost/api/users/health
+```
+
+## Monitoreo
+
+### Health Checks
+
+Cada servicio incluye health checks configurados:
+
+```bash
+# Verificar estado de todos los servicios
+curl https://localhost/api/users/health
+curl https://localhost/api/tasks/health
+```
+
+### Logs
+
+```bash
+# Ver logs de todos los servicios
+docker-compose logs -f
+
+# Ver logs de un servicio específico
+docker-compose logs -f user-service
+```
+
+## Desarrollo
+
+### Variables de Entorno
+
+El proyecto utiliza las siguientes variables de entorno:
+
+```env
+USER_SERVICE_PORT=5000
+TASK_SERVICE_PORT=5001
+NGINX_HTTP_PORT=80
+NGINX_HTTPS_PORT=443
+NGINX_ADMIN_PORT=81
+```
+
+### Escalado
+
+
+## Solución de Problemas
+
+### Problemas Comunes
+
+1. **Servicios no se comunican**:
+   - Verificar que estén en la misma red Docker
+   - Comprobar nombres de servicios en docker-compose.yml
+
+2. **Rate limiting muy restrictivo**:
+   - Ajustar parámetros en `nginx/custom.conf`
+   - Reiniciar nginx-proxy-manager
+
+3. **SSL no funciona**:
+   - Verificar configuración de certificados
+   - Comprobar redirección HTTP → HTTPS
+
+### Comandos Útiles
+
+```bash
+# Reiniciar todos los servicios
+docker-compose restart
+
+# Reconstruir servicios
+docker-compose build --no-cache
+
+# Limpiar recursos Docker
+docker system prune -a
+```
+
+### Configuración Nginx Personalizada
+
+El archivo `nginx/custom.conf` contiene la configuración avanzada para:
+- Rate limiting
+- Límites de conexiones
+- Timeouts de seguridad
+- Upstream para balanceo de carga
+
+### Arquitectura de Red
+
+```
+Internet → Nginx Proxy Manager (Puerto 80/443)
+                ↓
+    Red interna (microservices_network)
+                ↓
+    user-service (múltiples réplicas)
+    task-service (múltiples réplicas)
+```
